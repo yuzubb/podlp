@@ -1,28 +1,42 @@
-[build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
+name: Publish to PyPI
 
-[project]
-name = "podlp"  # PyPIで重複しない名前を指定
-version = "0.1.1"
-description = "Auto po_token generator and yt-dlp CLI tool"
-readme = "README.md"
-requires-python = ">=3.8"
-license = { text = "MIT" }
-authors = [
-    { name = "yuzu", email = "yuzu3daze@gmail.com" }
-]
-dependencies = [
-    "yt-dlp>=2026.07.04"
-]
+on:
+  release:
+    types: [published]
 
-# どのコンソールでもコマンドとして使えるようにする設定
-[project.scripts]
-podlp = "podlp.cli:main"  # 「my-ytdl」コマンドで cli.py の main 関数を実行
+jobs:
+  pypi-publish:
+    name: Upload release to PyPI
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/podlp
+    permissions:
+      id-token: write
 
-[tool.setuptools.packages.find]
-where = ["src"]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
 
-# bg_runner.js などのリソースファイルをパッケージに含める設定
-[tool.setuptools.package-data]
-"*" = ["*.js"]
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # 💡 package-lock.json がない環境でも失敗しないように npm i を指定
+      - name: Install Node.js dependencies
+        run: npm i
+
+      - name: Install build tools
+        run: python -m pip install build
+
+      - name: Build package
+        run: python -m build
+
+      - name: Publish package to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
