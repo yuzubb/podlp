@@ -18,7 +18,7 @@ dependencies = [
 
 # どのコンソールでもコマンドとして使えるようにする設定
 [project.scripts]
-my-ytdl = "my_yt_downloader.cli:main"  # 「my-ytdl」コマンドで cli.py の main 関数を実行
+podlp = "podlp.cli:main"  # 「my-ytdl」コマンドで cli.py の main 関数を実行
 
 [tool.setuptools.packages.find]
 where = ["src"]
