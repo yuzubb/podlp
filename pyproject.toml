@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "podlp"  # PyPIで重複しない名前を指定
+version = "0.1.0"
+description = "Auto po_token generator and yt-dlp CLI tool"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [
+    { name = "yuzu", email = "yuzu3daze@gmail.com" }
+]
+dependencies = [
+    "yt-dlp>=2026.07.04"
+]
+
+# どのコンソールでもコマンドとして使えるようにする設定
+[project.scripts]
+my-ytdl = "my_yt_downloader.cli:main"  # 「my-ytdl」コマンドで cli.py の main 関数を実行
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# bg_runner.js などのリソースファイルをパッケージに含める設定
+[tool.setuptools.package-data]
+"*" = ["*.js"]
