@@ -5,8 +5,10 @@ on:
     types: [published]
 
 jobs:
-  deploy:
+  pypi-publish:
+    name: Upload release to PyPI
     runs-on: ubuntu-latest
+    # 💡 PyPI の Trusted Publisher と連携するために必須の設定
     environment:
       name: pypi
       url: https://pypi.org/p/podlp
@@ -14,28 +16,25 @@ jobs:
       id-token: write
 
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: "3.x"
 
-      # 💡 Node.js のセットアップを追加
+      # 💡 Node.js 環境のセットアップ
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
-      # 💡 JS側の依存関係（youtube-po-token-generator）をインストール
+      # 💡 Node.js 依存のインストール
       - name: Install Node.js dependencies
         run: npm ci
 
       - name: Install build tools
-        run: |
-          python -m pip install --upgrade pip
-          pip install build
+        run: python -m pip install build
 
       - name: Build package
         run: python -m build
