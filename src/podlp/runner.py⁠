@@ -1,0 +1,38 @@
+import yt_dlp
+from typing import Dict, Any, Optional
+from .generator import NativePoTokenGenerator
+
+class YtDlpPoRunner:
+    """po_token 自動適用機能付き yt-dlp 実行クラス"""
+
+    def __init__(self):
+        self.generator = NativePoTokenGenerator()
+
+    def download(self, url: str, ytdl_options: Optional[Dict[str, Any]] = None) -> None:
+        print("⚡ po_token を自動生成中...")
+        tokens = self.generator.get_tokens()
+
+        po_token = tokens["po_token"]
+        visitor_data = tokens["visitor_data"]
+
+        print(f"✅ トークン取得成功:")
+        print(f"   po_token: {po_token[:25]}...")
+        print(f"   visitor_data: {visitor_data}")
+
+        # yt-dlp に po_token を渡す標準設定
+        ydl_opts = {
+            'extractor_args': {
+                'youtube': {
+                    'po_token': [f'web+{po_token}'],
+                    'visitor_data': [visitor_data]
+                }
+            },
+            'format': 'best',
+        }
+
+        if ytdl_options:
+            ydl_opts.update(ytdl_options)
+
+        print("🚀 yt-dlp を実行します...")
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([url])
