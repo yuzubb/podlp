@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "podlp"  # PyPIで重複しない名前を指定
-version = "0.1.0"
+version = "0.1.1"
 description = "Auto po_token generator and yt-dlp CLI tool"
 readme = "README.md"
 requires-python = ">=3.8"
